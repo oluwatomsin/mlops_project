@@ -42,4 +42,5 @@ def store_train_artifact(
         log.info(f"Successfully stored the model {model_name} performance artifact.")
     except Exception as e:
         log.exception(f"Failed to store the model {model_name} performance artifact.")
+        log.info(f"Exception: {e}")
         raise e
