@@ -6,7 +6,7 @@ from src.evaluator import AccuracyEvaluator, PrecisionEvaluator, RecallEvaluator
 
 
 
-@task(name="Model Evaluation", log_prints = True)
+@task(name="Model Evaluation", log_prints=True)
 def evaluate_model(model: ClassifierMixin, X_test: pd.DataFrame, y_test: pd.Series) -> Tuple[float]:
     """Creating a task that performs the evaluation of the models based
     on the 4 criterias"""
