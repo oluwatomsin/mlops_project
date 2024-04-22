@@ -62,9 +62,12 @@ class RandomForestRegressor(ModelDevelopmentTemplate):
         """
 
         try:
-            model = LogisticRegression()
+            model = RandomForestClassifier()
             model.fit(X_train, y_train)
             return model
         except Exception as e:
             print(f"Error training model {e}")
             raise e
+
+
+

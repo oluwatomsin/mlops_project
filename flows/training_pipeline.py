@@ -18,16 +18,22 @@ def ml_training_pipeline(data_path: str):
     # Data cleaning and splitting step
     X_train, X_test, y_train, y_test = preprocess_df(data)
 
-    # Model training step
-    trained_model = train_model(X_train, y_train)
-    
+    # Model training and optimization step
+    trained_model = train_model(
+        X_train,
+        y_train,
+        artifact_store_path="/Users/greatware/Desktop/mlops_project/artifacts"
+        )
     # model evaluation step
-    accuracy, f1_score, precision, recall = evaluate_model(trained_model, X_test, y_test)
-    
+    accuracy, f1_score, precision, recall = evaluate_model(
+        trained_model,
+        X_test,
+        y_test)
+
     # Storing the performance artifacts on the cloud
     store_train_artifact(
-    accuracy=accuracy,
-    f1score=f1_score,
-    precision=precision,
-    recall=recall,
-    model_name=trained_model.__class__.__name__)
+        accuracy=accuracy,
+        f1score=f1_score,
+        precision=precision,
+        recall=recall,
+        model_name=trained_model.__class__.__name__)
