@@ -21,6 +21,7 @@ class AccuracyEvaluator(Evaluator):
         """Evaluate a model on a test set."""
         try:
             y_pred = model.predict(X_test)
+            print(y_pred)
             return accuracy_score(y_test, y_pred)
         except Exception as e:
             print(f"Error while evaluating accuracy: {e}")
