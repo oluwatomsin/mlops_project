@@ -5,6 +5,11 @@ from sklearn.base import ClassifierMixin
 import matplotlib.pyplot as plt
 import pandas as pd
 import os
+from optuna.visualization import (
+    plot_parallel_coordinate,
+    plot_param_importances,
+    plot_slice,
+    plot_optimization_history)
 
 
 class RandomForestTrainer:
@@ -60,8 +65,8 @@ class RandomForestTrainer:
 
         study.optimize(
             objective,
-            n_trials=10,
-            n_jobs=-1,
+            n_trials=3,
+            n_jobs=2,
             show_progress_bar=True)
 
         # Get the best hyperparameters
@@ -77,35 +82,29 @@ class RandomForestTrainer:
                 min_samples_leaf=best_params['min_samples_leaf'])
 
         n_model.fit(X_train, y_train)
+
+        try:
+            # Generate and save optimization history plot
+            optimization_history_plot = plot_optimization_history(study)
+            optimization_history_plot.write_image(os.path.join(self.artifact_store_path, "optim_hist.png"))
+
+            # Generate and save parallel coordinate plot
+            parallel_coordinate_plot = plot_parallel_coordinate(study)
+            parallel_coordinate_plot.write_image(os.path.join(self.artifact_store_path, "parallel_coordinate.png"))
+
+            # Generate and save slice plot
+            slice_plot = plot_slice(study, params=['n_estimators', 'max_depth', 'min_samples_split', 'min_samples_leaf'])
+            slice_plot.write_image(os.path.join(self.artifact_store_path, "slice_plot.png"))
+
+            # Generate and save parameter importances plot
+            param_importance_plot = plot_param_importances(study)
+            param_importance_plot.write_image(os.path.join(self.artifact_store_path, "param_importance.png"))
+
+            # Close all figures after saving
+            plt.close('all')
+
+        except Exception as e:
+            print(f"Issue storing artifact: {e}")
+            pass
+
         return n_model
-
-        # try:
-        #     # Storing our artifacts in the artifact store
-        #     optuna.visualization.plot_optimization_history(
-        #             study)
-        #     plt.savefig(
-        #         os.path.join(self.artifact_store_path, "optim_hist.png")
-        #         )
-
-        #     optuna.visualization.plot_parallel_coordinate(study)
-        #     plt.savefig(
-        #         os.path.join(self.artifact_store_path, "parallel_coordinate.png")
-        #         )
-
-        #     optuna.visualization.plot_slice(
-        #             study,
-        #             params=['n_estimators',
-        #                     'max_depth',
-        #                     'min_samples_split',
-        #                     'min_samples_leaf'])
-        #     plt.savefig(
-        #         os.path.join(self.artifact_store_path, "slice_plot.png")
-        #         )
-
-        #     optuna.visualization.plot_param_importances(study)
-        #     plt.savefig(
-        #         os.path.join(self.artifact_store_path, "param_importance.png")
-        #         )
-        # except Exception as e:
-        #     print(f"Issue stroring artifact: {e}")
-        #     pass
