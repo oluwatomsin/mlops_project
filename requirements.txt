@@ -4,3 +4,4 @@ mlflow
 scikit-learn
 prefect
 streamlit
+kaleido
